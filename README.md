@@ -6,6 +6,7 @@ Package to configure you dots pagination carousel just like Instagram does
 
 ```sh
 npm install react-native-animated-dots-carousel
+README pending complete
 ```
 
 ## Usage
