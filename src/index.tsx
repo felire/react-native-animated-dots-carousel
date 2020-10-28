@@ -1,5 +1,7 @@
-export default {
-  multiply(a: number, b: number) {
-    return Promise.resolve(a * b);
-  },
-};
+import CarouselDots from './CarouselDots';
+
+import type { CarouselDotsProps } from './CarouselDots';
+export * from './CarouselDots/interface';
+export type { CarouselDotsProps };
+
+export default CarouselDots;
