@@ -1,7 +1,7 @@
 import CarouselDots from './CarouselDots';
 
-import type { CarouselDotsProps } from './CarouselDots';
+import { CarouselDotsProps } from './CarouselDots';
 export * from './CarouselDots/interface';
-export type { CarouselDotsProps };
+export { CarouselDotsProps };
 
 export default CarouselDots;

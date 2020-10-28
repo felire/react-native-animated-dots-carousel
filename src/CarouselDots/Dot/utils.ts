@@ -1,4 +1,4 @@
-import type { DecreasingDot, DotConfig } from '../interface';
+import { DecreasingDot, DotConfig } from '../interface';
 
 interface GetDotStyle {
   index: number;

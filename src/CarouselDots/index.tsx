@@ -6,7 +6,7 @@ import usePrevious from './use-previous';
 
 import InvisibleFiller from './InvisibleFiller';
 import Dot from './Dot';
-import type { CarouselState, DecreasingDot, DotConfig } from './interface';
+import { CarouselState, DecreasingDot, DotConfig } from './interface';
 import styles from './styles';
 
 export interface CarouselDotsProps {

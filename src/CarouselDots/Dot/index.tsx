@@ -4,7 +4,8 @@ import { Animated } from 'react-native';
 
 import usePrevious from '../use-previous';
 
-import type { CarouselState, DecreasingDot, DotConfig } from '../interface';
+//RECHECK THIS WAY OF IMPORTING TYPES FOR COMPATIBILITY
+import { CarouselState, DecreasingDot, DotConfig } from '../interface';
 
 import { getDotStyle } from './utils';
 
