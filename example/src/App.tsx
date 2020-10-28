@@ -8,25 +8,31 @@ export default function App() {
   const [index, setIndex] = React.useState<number>(0);
 
   const increaseIndex = () => {
-    setIndex(Math.max(index - 1, 0));
+    setIndex(Math.min(index + 1, LENGTH - 1));
   };
   const decreaseIndex = () => {
-    setIndex(Math.min(index + 1, LENGTH));
+    setIndex(Math.max(index - 1, 0));
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={{ borderWidth: 1 }} onPress={increaseIndex}>
+      <TouchableOpacity
+        style={{ borderWidth: 1, marginTop: 20, backgroundColor: 'white' }}
+        onPress={increaseIndex}
+      >
         <Text>Increase</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={{ borderWidth: 1 }} onPress={decreaseIndex}>
+      <TouchableOpacity
+        style={{ borderWidth: 1, marginTop: 20, backgroundColor: 'white' }}
+        onPress={decreaseIndex}
+      >
         <Text>Decrease</Text>
       </TouchableOpacity>
       <AnimatedDotsCarousel
         length={LENGTH}
         currentIndex={index}
         maxIndicators={4}
-        interpolateOpacityAndColor={false}
+        interpolateOpacityAndColor={true}
         activeIndicatorConfig={{
           color: 'red',
           margin: 3,
@@ -48,10 +54,6 @@ export default function App() {
             config: { color: 'white', margin: 3, opacity: 0.5, size: 4 },
             quantity: 1,
           },
-          {
-            config: { color: 'white', margin: 3, opacity: 0.5, size: 2 },
-            quantity: 1,
-          },
         ]}
       />
     </View>
@@ -63,5 +65,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'black',
   },
 });
