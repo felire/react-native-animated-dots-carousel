@@ -1,5 +1,7 @@
 # react-native-animated-dots-carousel
 
+![versión npm](https://img.shields.io/npm/v/react-native-animated-dots-carousel.svg?color=68d5f7)
+![Download npm](https://img.shields.io/npm/dw/react-native-animated-dots-carousel.svg?color=7551bb)
 [![MIT License][license-shield]][license-url]
 
 <!-- TABLE OF CONTENTS -->
