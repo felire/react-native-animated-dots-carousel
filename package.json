@@ -1,6 +1,6 @@
 {
   "name": "react-native-animated-dots-carousel",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Package to configure you dots pagination carousel just like Instagram does",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
