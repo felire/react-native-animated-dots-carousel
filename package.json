@@ -33,7 +33,21 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "react",
+    "native",
+    "animated",
+    "dots",
+    "carousel",
+    "instagram",
+    "animation",
+    "interpolation",
+    "react-native-animated-dots",
+    "animated-dots",
+    "dot",
+    "infinite-dots",
+    "infinite",
+    "pagination"
   ],
   "repository": "https://github.com/felire/react-native-animated-dots-carousel",
   "author": "Felipe Rodriguez Esturo <feliress13@gmail.com> (https://github.com/felire)",
