@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import * as React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 
 const LENGTH = 10;
