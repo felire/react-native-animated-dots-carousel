@@ -89,7 +89,6 @@ const CarouselDots = ({
       refScrollView.current.scrollTo({
         animated: true,
         x: moveTo,
-        y: moveTo,
       });
     },
     [decreasingDots, maxIndicators]
