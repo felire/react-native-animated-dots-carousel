@@ -73,10 +73,10 @@ const CarouselDots = ({
   const refScrollView = useRef<ScrollView>(null);
   const [curIndex, setCurIndex] = useState<number>(currentIndex);
   const positiveMomentum = useRef<boolean>(false);
-  const prevIndex = usePrevious(curIndex, curIndex);
+  const prevIndex = usePrevious(curIndex, curIndex - 1 >= 0 ? curIndex - 1 : curIndex);
   const [carouselState, setCarouselState] = useState<CarouselState>({
     currentIndex,
-    state: 1,
+    state: currentIndex <= maxIndicators ? currentIndex : maxIndicators,
   });
   const list = [...Array(length).keys()];
   const scrollTo = useCallback(
@@ -109,14 +109,17 @@ const CarouselDots = ({
         state: internalState,
       });
     }
-
     if (
       length > maxIndicators &&
       (finalState > maxIndicators || finalState < 1)
-    )
+    ) {
       scrollTo(curIndex);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curIndex, length, maxIndicators, scrollTo]);
+  useEffect(() => {
+    setTimeout(() => scrollTo(curIndex), 0);
+  }, []);
   const containerSize =
     decreasingDots.reduce(
       (acc, current) => calculateDecreasingDotSize(current) + acc,
