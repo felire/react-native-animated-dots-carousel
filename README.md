@@ -54,7 +54,7 @@ yarn add react-native-animated-dots-carousel
 
 ```js
 import * as React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { I18nManager, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 
 const LENGTH = 10;
@@ -87,6 +87,7 @@ export default function App() {
         length={LENGTH}
         currentIndex={index}
         maxIndicators={4}
+        rtlMode={I18nManager.isRTL}
         interpolateOpacityAndColor={true}
         activeIndicatorConfig={{
           color: 'red',
@@ -159,7 +160,8 @@ export interface DecreasingDot {
 | `inactiveIndicatorConfig`                  | `DotConfig`                   | required                        | This is an object with the configuration of the inactive indicator                                        |
 | `decreasingDots`                  | `DecreasingDot[]`                   | required                        | This is a list where you have to define the quantiy per element and the dot config. The quantity represents how many dots with this config you want per side (simetrically). The size of this elements should be decreasing size if you want this to look nice.      
 | `verticalOrientation`                  | `boolean`                   | false                        | If you want this oriented vertically or horizontally. Default is horizontally       
-| `interpolateOpacityAndColor`                  | `boolean`                   | true                        | Default is true. With this setted to true you will be able to see an animation everytime the activeDot change.            
+| `interpolateOpacityAndColor`                  | `boolean`                   | true                        | Default is true. With this setted to true you will be able to see an animation everytime the activeDot change.
+| `rtlMode`                  | `boolean`                   | false                        | Right-to-left mode
 
 
 <!-- ROADMAP -->
