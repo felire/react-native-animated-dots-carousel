@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, ScrollView } from 'react-native';
+import { I18nManager, View, ScrollView } from 'react-native';
 
 import usePrevious from './use-previous';
 
@@ -163,7 +163,10 @@ const CarouselDots = ({
     >
       <ScrollView
         ref={refScrollView}
-        contentContainerStyle={styles.scrollContainer}
+        contentContainerStyle={[
+          styles.scrollContainer,
+          { flexDirection: I18nManager.isRTL ? 'row-reverse' : 'row' }
+        ]}
         bounces={false}
         horizontal={!verticalOrientation}
         scrollEnabled={false}
