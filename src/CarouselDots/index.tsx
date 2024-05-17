@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, ScrollView } from 'react-native';
+import { I18nManager, View, ScrollView } from 'react-native';
 
 import usePrevious from './use-previous';
 
@@ -18,7 +18,6 @@ export interface CarouselDotsProps {
   decreasingDots: DecreasingDot[];
   verticalOrientation?: boolean;
   interpolateOpacityAndColor?: boolean;
-  rtlMode?: boolean;
 }
 
 const calculateDotSize = (dot: DotConfig): number => dot.size + 2 * dot.margin;
@@ -70,7 +69,6 @@ const CarouselDots = ({
   decreasingDots,
   verticalOrientation = false,
   interpolateOpacityAndColor = true,
-  rtlMode = false,
 }: CarouselDotsProps): JSX.Element => {
   const refScrollView = useRef<ScrollView>(null);
   const [curIndex, setCurIndex] = useState<number>(currentIndex);
@@ -167,7 +165,7 @@ const CarouselDots = ({
         ref={refScrollView}
         contentContainerStyle={[
           styles.scrollContainer,
-          { flexDirection: rtlMode ? 'row-reverse' : 'row' }
+          { flexDirection: I18nManager.isRTL ? 'row-reverse' : 'row' }
         ]}
         bounces={false}
         horizontal={!verticalOrientation}
