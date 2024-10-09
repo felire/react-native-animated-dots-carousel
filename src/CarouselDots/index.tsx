@@ -1,12 +1,18 @@
-/* eslint-disable react-native/no-inline-styles */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
 import { I18nManager, View, ScrollView } from 'react-native';
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import type { CarouselState, DecreasingDot, DotConfig } from './interface';
 
 import usePrevious from './use-previous';
-
 import InvisibleFiller from './InvisibleFiller';
 import Dot from './Dot';
-import { CarouselState, DecreasingDot, DotConfig } from './interface';
 import styles from './styles';
 
 export interface CarouselDotsProps {
@@ -18,6 +24,7 @@ export interface CarouselDotsProps {
   decreasingDots: DecreasingDot[];
   verticalOrientation?: boolean;
   interpolateOpacityAndColor?: boolean;
+  duration?: number;
 }
 
 const calculateDotSize = (dot: DotConfig): number => dot.size + 2 * dot.margin;
@@ -40,11 +47,13 @@ const calculateOffsetSize = (
   offset: number
 ): number => {
   const minimumSize = calculateDotSize(
-    decreasingDot[decreasingDot.length - 1].config
+    decreasingDot[decreasingDot.length - 1]!.config
   );
   const result = decreasingDot.reduce(
     (acc, dot) => {
-      if (acc.offset === 0) return acc;
+      if (acc.offset === 0) {
+        return acc;
+      }
       if (acc.offset - dot.quantity <= 0) {
         return {
           offset: 0,
@@ -69,6 +78,7 @@ const CarouselDots = ({
   decreasingDots,
   verticalOrientation = false,
   interpolateOpacityAndColor = true,
+  duration = 500,
 }: CarouselDotsProps): JSX.Element => {
   const refScrollView = useRef<ScrollView>(null);
   const [curIndex, setCurIndex] = useState<number>(currentIndex);
@@ -81,7 +91,9 @@ const CarouselDots = ({
   const list = [...Array(length).keys()];
   const scrollTo = useCallback(
     (index: number): void => {
-      if (!refScrollView.current) return;
+      if (!refScrollView.current) {
+        return;
+      }
       const moveTo = positiveMomentum.current
         ? calculateOffsetSize(decreasingDots, index - maxIndicators + 1)
         : calculateOffsetSize(decreasingDots, index);
@@ -101,8 +113,12 @@ const CarouselDots = ({
     let internalState = carouselState.state;
     internalState += curIndex - prevIndex;
     const finalState = internalState;
-    if (internalState > maxIndicators) internalState = maxIndicators;
-    if (internalState < 1) internalState = 1;
+    if (internalState > maxIndicators) {
+      internalState = maxIndicators;
+    }
+    if (internalState < 1) {
+      internalState = 1;
+    }
     if (internalState) {
       setCarouselState({
         currentIndex: curIndex,
@@ -113,8 +129,9 @@ const CarouselDots = ({
     if (
       length > maxIndicators &&
       (finalState > maxIndicators || finalState < 1)
-    )
+    ) {
       scrollTo(curIndex);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curIndex, length, maxIndicators, scrollTo]);
   const containerSize =
@@ -142,6 +159,7 @@ const CarouselDots = ({
               decreasingDots={decreasingDots}
               carouselState={carouselState}
               interpolateOpacityAndColor={interpolateOpacityAndColor}
+              duration={duration}
             />
           );
         })}
@@ -165,7 +183,7 @@ const CarouselDots = ({
         ref={refScrollView}
         contentContainerStyle={[
           styles.scrollContainer,
-          { flexDirection: I18nManager.isRTL ? 'row-reverse' : 'row' }
+          { flexDirection: I18nManager.isRTL ? 'row-reverse' : 'row' },
         ]}
         bounces={false}
         horizontal={!verticalOrientation}
@@ -189,6 +207,7 @@ const CarouselDots = ({
               verticalOrientation={verticalOrientation}
               carouselState={carouselState}
               interpolateOpacityAndColor={interpolateOpacityAndColor}
+              duration={duration}
             />
           );
         })}
@@ -201,4 +220,97 @@ const CarouselDots = ({
   );
 };
 
-export default CarouselDots;
+interface CarouselDotsWrapperProps extends CarouselDotsProps {
+  scrollableDotsConfig?: {
+    setIndex: Dispatch<SetStateAction<number>>;
+    onNewIndex?: (index: number) => void;
+    containerBackgroundColor: string;
+  };
+}
+const MIN_TRANSLATION_DOT_ANIMATION = 15;
+
+const CarouselDotsWrapper = ({
+  scrollableDotsConfig,
+  ...rest
+}: CarouselDotsWrapperProps) => {
+  const [dotsCarouselActive, setDotsCarouselActive] = useState(false);
+  const accDesplacementPos = useRef(0);
+  const accDesplacementNeg = useRef(0);
+  const lastTranslationX = useRef(0);
+  const prevMomentum = useRef<null | boolean>(null);
+  const lastXOfMomentum = useRef<null | number>(null);
+
+  const gesture = Gesture.Pan()
+    .onStart(() => {
+      accDesplacementPos.current = 0;
+      accDesplacementNeg.current = 0;
+      setDotsCarouselActive(true);
+    })
+    .onUpdate((e) => {
+      const momentum = e.translationX - lastTranslationX.current >= 0;
+      lastTranslationX.current = e.translationX;
+      if (prevMomentum.current !== momentum) {
+        lastXOfMomentum.current = e.translationX;
+        prevMomentum.current = momentum;
+        accDesplacementPos.current = 0;
+        accDesplacementNeg.current = 0;
+      }
+      if (
+        momentum &&
+        e.translationX >=
+          MIN_TRANSLATION_DOT_ANIMATION +
+            accDesplacementPos.current +
+            (lastXOfMomentum.current || 0)
+      ) {
+        accDesplacementPos.current =
+          e.translationX - (lastXOfMomentum.current || 0);
+        scrollableDotsConfig?.setIndex((prevActive) => {
+          const newActive = Math.min(prevActive + 1, rest.length - 1);
+          scrollableDotsConfig?.onNewIndex?.(newActive);
+          return newActive;
+        });
+      } else if (
+        !momentum &&
+        e.translationX <=
+          -MIN_TRANSLATION_DOT_ANIMATION +
+            accDesplacementNeg.current +
+            (lastXOfMomentum.current || 0)
+      ) {
+        accDesplacementNeg.current =
+          e.translationX - (lastXOfMomentum.current || 0);
+        scrollableDotsConfig?.setIndex((prevActive) => {
+          const newActive = Math.max(prevActive - 1, 0);
+          scrollableDotsConfig?.onNewIndex?.(newActive);
+          return newActive;
+        });
+      }
+    })
+    .onEnd(() => setDotsCarouselActive(false))
+    .runOnJS(true);
+
+  return scrollableDotsConfig ? (
+    <GestureDetector gesture={gesture}>
+      <View
+        style={[
+          {
+            alignItems: 'center',
+            borderRadius: 15,
+            height: 30,
+            justifyContent: 'center',
+            paddingHorizontal: 15,
+          },
+          dotsCarouselActive && {
+            backgroundColor: scrollableDotsConfig.containerBackgroundColor,
+          },
+        ]}
+      >
+        <View style={{ height: 7 }}>
+          <CarouselDots {...rest} />
+        </View>
+      </View>
+    </GestureDetector>
+  ) : (
+    <CarouselDots {...rest} />
+  );
+};
+export default CarouselDotsWrapper;

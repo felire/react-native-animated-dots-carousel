@@ -1,4 +1,4 @@
-import { DecreasingDot, DotConfig } from '../interface';
+import type { DecreasingDot, DotConfig } from '../interface';
 
 interface GetDotStyle {
   index: number;
@@ -19,7 +19,7 @@ export const getDotStyle = ({
   decreasingDots,
   indicatorState,
 }: GetDotStyle): DotConfig => {
-  let dotConfig = decreasingDots[decreasingDots.length - 1].config;
+  let dotConfig = decreasingDots[decreasingDots.length - 1]!.config;
 
   const rightRemnant = maxIndicators - indicatorState;
   const leftRemnant = indicatorState - 1;

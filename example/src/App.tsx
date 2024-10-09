@@ -1,62 +1,120 @@
-/* eslint-disable react-native/no-inline-styles */
 import * as React from 'react';
-import { StyleSheet, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import {
+  StyleSheet,
+  SafeAreaView,
+  Dimensions,
+  ScrollView,
+  View,
+  Image,
+  type NativeSyntheticEvent,
+  type NativeScrollEvent,
+} from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-const LENGTH = 10;
+const { width } = Dimensions.get('window');
+
+// Define las imágenes para el carrusel
+const images = [
+  { id: '1', uri: 'https://via.placeholder.com/800x400.png?text=Image+1' },
+  { id: '2', uri: 'https://via.placeholder.com/800x400.png?text=Image+2' },
+  { id: '3', uri: 'https://via.placeholder.com/800x400.png?text=Image+3' },
+  { id: '4', uri: 'https://via.placeholder.com/800x400.png?text=Image+4' },
+  { id: '5', uri: 'https://via.placeholder.com/800x400.png?text=Image+5' },
+  { id: '6', uri: 'https://via.placeholder.com/800x400.png?text=Image+6' },
+  { id: '7', uri: 'https://via.placeholder.com/800x400.png?text=Image+7' },
+  { id: '8', uri: 'https://via.placeholder.com/800x400.png?text=Image+8' },
+  { id: '9', uri: 'https://via.placeholder.com/800x400.png?text=Image+9' },
+  { id: '10', uri: 'https://via.placeholder.com/800x400.png?text=Image+10' },
+];
+
 export default function App() {
   const [index, setIndex] = React.useState<number>(0);
+  const scrollViewRef = React.useRef<ScrollView>(null);
 
-  const increaseIndex = () => {
-    setIndex(Math.min(index + 1, LENGTH - 1));
-  };
-  const decreaseIndex = () => {
-    setIndex(Math.max(index - 1, 0));
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const contentOffsetX = event.nativeEvent.contentOffset.x;
+    const finalIndex = Math.floor(contentOffsetX / width); // Calcular el índice
+    setIndex(finalIndex);
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        style={{ borderWidth: 1, marginTop: 20, backgroundColor: 'white' }}
-        onPress={increaseIndex}
-      >
-        <Text>Increase</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{ borderWidth: 1, marginTop: 20, backgroundColor: 'white' }}
-        onPress={decreaseIndex}
-      >
-        <Text>Decrease</Text>
-      </TouchableOpacity>
-      <AnimatedDotsCarousel
-        length={LENGTH}
-        currentIndex={index}
-        maxIndicators={4}
-        interpolateOpacityAndColor={true}
-        activeIndicatorConfig={{
-          color: 'red',
-          margin: 3,
-          opacity: 1,
-          size: 8,
-        }}
-        inactiveIndicatorConfig={{
-          color: 'white',
-          margin: 3,
-          opacity: 0.5,
-          size: 8,
-        }}
-        decreasingDots={[
-          {
-            config: { color: 'white', margin: 3, opacity: 0.5, size: 6 },
-            quantity: 1,
-          },
-          {
-            config: { color: 'white', margin: 3, opacity: 0.5, size: 4 },
-            quantity: 1,
-          },
-        ]}
-      />
-    </SafeAreaView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.container}>
+        <ScrollView
+          ref={scrollViewRef}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          style={{
+            width: '100%',
+            height: 300,
+          }}
+        >
+          {images.map((image) => (
+            <View
+              key={image.id}
+              style={{
+                width: width,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Image
+                source={{ uri: image.uri }}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  resizeMode: 'cover',
+                }}
+              />
+            </View>
+          ))}
+        </ScrollView>
+        <View style={{ marginTop: 20 }}>
+          <AnimatedDotsCarousel
+            length={images.length}
+            scrollableDotsConfig={{
+              setIndex,
+              onNewIndex: (newIndex) => {
+                scrollViewRef?.current?.scrollTo?.({
+                  x: newIndex * width,
+                  animated: false,
+                });
+              },
+              containerBackgroundColor: 'rgba(230,230,230, 0.5)',
+            }}
+            currentIndex={index}
+            maxIndicators={4}
+            interpolateOpacityAndColor={true}
+            activeIndicatorConfig={{
+              color: 'red',
+              margin: 3,
+              opacity: 1,
+              size: 8,
+            }}
+            inactiveIndicatorConfig={{
+              color: 'white',
+              margin: 3,
+              opacity: 0.5,
+              size: 8,
+            }}
+            decreasingDots={[
+              {
+                config: { color: 'white', margin: 3, opacity: 0.5, size: 6 },
+                quantity: 1,
+              },
+              {
+                config: { color: 'white', margin: 3, opacity: 0.5, size: 4 },
+                quantity: 1,
+              },
+            ]}
+          />
+        </View>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
 
