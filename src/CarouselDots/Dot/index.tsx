@@ -1,11 +1,14 @@
-/* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useRef, useState } from 'react';
-import { Animated } from 'react-native';
+import { useEffect, useState } from 'react';
+import Animated, {
+  useSharedValue,
+  withTiming,
+  interpolate,
+  interpolateColor,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
+import type { CarouselState, DecreasingDot, DotConfig } from '../interface';
 
 import usePrevious from '../use-previous';
-
-//RECHECK THIS WAY OF IMPORTING TYPES FOR COMPATIBILITY
-import { CarouselState, DecreasingDot, DotConfig } from '../interface';
 
 import { getDotStyle } from './utils';
 
@@ -18,6 +21,7 @@ interface Dot {
   carouselState: CarouselState;
   verticalOrientation: boolean;
   interpolateOpacityAndColor: boolean;
+  duration: number;
 }
 
 const Dot = ({
@@ -29,6 +33,7 @@ const Dot = ({
   carouselState,
   verticalOrientation,
   interpolateOpacityAndColor,
+  duration,
 }: Dot): JSX.Element => {
   const { currentIndex, state } = carouselState;
   const [type, setType] = useState(
@@ -43,7 +48,7 @@ const Dot = ({
     })
   );
   const prevType = usePrevious(type, type);
-  const animatedValue = useRef<Animated.Value>(new Animated.Value(0));
+  const animatedValue = useSharedValue(0);
 
   useEffect(() => {
     setType(
@@ -68,45 +73,48 @@ const Dot = ({
   ]);
 
   useEffect(() => {
-    animatedValue.current.setValue(0);
-    Animated.timing(animatedValue.current, {
-      duration: 300,
-      toValue: 1,
-      useNativeDriver: false,
-    }).start();
-  }, [currentIndex]);
+    animatedValue.value = 0;
+    animatedValue.value = withTiming(1, { duration });
+  }, [animatedValue, currentIndex, duration]);
 
-  const size = animatedValue.current.interpolate({
-    inputRange: [0, 1],
-    outputRange: [prevType.size, type.size],
+  const animatedStyle = useAnimatedStyle(() => {
+    const size = interpolate(
+      animatedValue.value,
+      [0, 1],
+      [prevType.size, type.size]
+    );
+
+    const backgroundColorInterpolated = interpolateColor(
+      animatedValue.value,
+      [0, 1],
+      [prevType.color, type.color]
+    );
+
+    const opacityInterpolated = interpolate(
+      animatedValue.value,
+      [0, 1],
+      [prevType.opacity, type.opacity]
+    );
+    return {
+      backgroundColor: interpolateOpacityAndColor
+        ? backgroundColorInterpolated
+        : type.color,
+      opacity: interpolateOpacityAndColor ? opacityInterpolated : type.opacity,
+      height: size,
+      width: size,
+    };
   });
-
   return (
     <Animated.View
       style={[
         {
-          backgroundColor: interpolateOpacityAndColor
-            ? animatedValue.current.interpolate({
-                inputRange: [0, 1],
-                outputRange: [prevType.color, type.color],
-              })
-            : type.color,
           borderColor: type.borderColor,
           borderRadius: type.size,
           borderWidth: type.borderWidth,
           marginHorizontal: verticalOrientation ? 0 : type.margin,
           marginVertical: verticalOrientation ? type.margin : 0,
-          opacity: interpolateOpacityAndColor
-            ? animatedValue.current.interpolate({
-                inputRange: [0, 1],
-                outputRange: [prevType.opacity, type.opacity],
-              })
-            : type.opacity,
         },
-        {
-          height: size,
-          width: size,
-        },
+        animatedStyle,
       ]}
     />
   );
