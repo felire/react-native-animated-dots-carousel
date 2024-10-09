@@ -1,14 +1,12 @@
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type Dispatch,
-  type SetStateAction,
-} from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { I18nManager, View, ScrollView } from 'react-native';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
-import type { CarouselState, DecreasingDot, DotConfig } from './interface';
+import type {
+  CarouselState,
+  DecreasingDot,
+  DotConfig,
+  ScrollableDotConfig,
+} from './interface';
 
 import usePrevious from './use-previous';
 import InvisibleFiller from './InvisibleFiller';
@@ -221,12 +219,9 @@ const CarouselDots = ({
 };
 
 interface CarouselDotsWrapperProps extends CarouselDotsProps {
-  scrollableDotsConfig?: {
-    setIndex: Dispatch<SetStateAction<number>>;
-    onNewIndex?: (index: number) => void;
-    containerBackgroundColor: string;
-  };
+  scrollableDotsConfig?: ScrollableDotConfig;
 }
+
 const MIN_TRANSLATION_DOT_ANIMATION = 15;
 
 const CarouselDotsWrapper = ({
@@ -292,19 +287,15 @@ const CarouselDotsWrapper = ({
     <GestureDetector gesture={gesture}>
       <View
         style={[
-          {
-            alignItems: 'center',
-            borderRadius: 15,
-            height: 30,
-            justifyContent: 'center',
-            paddingHorizontal: 15,
-          },
+          scrollableDotsConfig.container || styles.scrollableDotsContainer,
           dotsCarouselActive && {
-            backgroundColor: scrollableDotsConfig.containerBackgroundColor,
+            backgroundColor:
+              scrollableDotsConfig.containerBackgroundColor ||
+              'rgba(230,230,230, 0.5)',
           },
         ]}
       >
-        <View style={{ height: 7 }}>
+        <View style={{ height: rest.activeIndicatorConfig.size }}>
           <CarouselDots {...rest} />
         </View>
       </View>

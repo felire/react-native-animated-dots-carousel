@@ -9,6 +9,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  scrollableDotsContainer: {
+    alignItems: 'center',
+    borderRadius: 15,
+    height: 30,
+    justifyContent: 'center',
+    paddingHorizontal: 15,
+  },
 });
 
 export default styles;

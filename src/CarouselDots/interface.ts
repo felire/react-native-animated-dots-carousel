@@ -1,3 +1,6 @@
+import type { Dispatch, SetStateAction } from 'react';
+import type { StyleProp, ViewStyle } from 'react-native';
+
 export interface DotConfig {
   size: number;
   opacity: number;
@@ -14,4 +17,11 @@ export interface DecreasingDot {
 export interface CarouselState {
   currentIndex: number;
   state: number;
+}
+
+export interface ScrollableDotConfig {
+  setIndex: Dispatch<SetStateAction<number>>;
+  onNewIndex?: (index: number) => void;
+  containerBackgroundColor: string;
+  container?: StyleProp<ViewStyle>;
 }

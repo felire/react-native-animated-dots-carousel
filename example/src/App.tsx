@@ -14,7 +14,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const { width } = Dimensions.get('window');
 
-// Define las imágenes para el carrusel
 const images = [
   { id: '1', uri: 'https://via.placeholder.com/800x400.png?text=Image+1' },
   { id: '2', uri: 'https://via.placeholder.com/800x400.png?text=Image+2' },
@@ -34,7 +33,7 @@ export default function App() {
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
-    const finalIndex = Math.floor(contentOffsetX / width); // Calcular el índice
+    const finalIndex = Math.floor(contentOffsetX / width);
     setIndex(finalIndex);
   };
 
@@ -73,7 +72,7 @@ export default function App() {
             </View>
           ))}
         </ScrollView>
-        <View style={{ marginTop: 20 }}>
+        <View style={{ marginTop: 20, flex: 1 }}>
           <AnimatedDotsCarousel
             length={images.length}
             scrollableDotsConfig={{
@@ -85,6 +84,13 @@ export default function App() {
                 });
               },
               containerBackgroundColor: 'rgba(230,230,230, 0.5)',
+              container: {
+                alignItems: 'center',
+                borderRadius: 15,
+                height: 30,
+                justifyContent: 'center',
+                paddingHorizontal: 15,
+              },
             }}
             currentIndex={index}
             maxIndicators={4}
