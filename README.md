@@ -28,6 +28,12 @@ With this package you could make whatever configuration you might need on your p
 
 ## Examples
 
+<img src="https://media.giphy.com/media/blSIDevGYGcLQykskG/giphy.gif" alt="Example" width="320"/>
+
+<img src="https://media.giphy.com/media/icbah07Wc272jQnVne/giphy.gif" alt="Example" width="320"/>
+
+<img src="https://media.giphy.com/media/G6yx1xoe815KUUQ8mY/giphy.gif" alt="Example" width="320"/>
+
 <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjM5ZmFpdWZvZTZuNmkya283dzltYWNib20wOTdsNnp1emgyMm4yOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5Ls50tOsyXRX5GoGdh/200.gif" alt="Example" width="320"/>
 
 <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWgxaGpyOXV1cTVnajJuYXZjZWVlMzI3Z3I0dnV6NWdjY2V4NnoxYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/fAyKM1Bnvty9NuGfQD/giphy.gif" alt="Example" width="320"/>
