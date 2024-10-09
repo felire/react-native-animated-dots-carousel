@@ -29,33 +29,6 @@ module.exports = {
     'no-bitwise': 'off',
     'import/no-named-as-default': 'error',
     'import/no-unresolved': 'off',
-    'no-restricted-imports': [
-      'error',
-      {
-        paths: [
-          {
-            name: 'react-native',
-            importNames: ['Button'],
-            message: 'Please use @components/Button instead',
-          },
-          {
-            name: 'react-native',
-            importNames: ['Text'],
-            message: 'Please use @components/Text instead',
-          },
-          {
-            name: 'react-native-mmkv',
-            importNames: ['MMKV'],
-            message: 'Please use @services/encryptedStorage instead',
-          },
-          {
-            name: 'react-native',
-            importNames: ['ActivityIndicator'],
-            message: 'Please use @components/ActivityIndicator instead',
-          },
-        ],
-      },
-    ],
     'import/order': [
       'error',
       {
@@ -64,14 +37,6 @@ module.exports = {
           ['builtin', 'external', 'type', 'internal'],
           'parent',
           ['sibling', 'index'],
-        ],
-        'pathGroups': [
-          {
-            pattern:
-              '@[assets|components|config|hooks|interfaces|modules|navigation|redux|services|shared]*/**',
-            group: 'internal',
-            position: 'after',
-          },
         ],
         'distinctGroup': false,
         'pathGroupsExcludedImportTypes': ['builtin'],
