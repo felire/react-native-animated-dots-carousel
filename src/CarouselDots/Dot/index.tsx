@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Animated, {
   useSharedValue,
   withTiming,
@@ -22,6 +22,7 @@ interface Dot {
   verticalOrientation: boolean;
   interpolateOpacityAndColor: boolean;
   duration: number;
+  length: number;
 }
 
 const Dot = ({
@@ -34,43 +35,44 @@ const Dot = ({
   verticalOrientation,
   interpolateOpacityAndColor,
   duration,
+  length,
 }: Dot): JSX.Element => {
   const { currentIndex, state } = carouselState;
+
+  const calculatedStyles = useMemo(() => {
+    const dotStylesMap = new Map<string, DotConfig>();
+    for (let stateI = 0; stateI <= maxIndicators; stateI++) {
+      for (let currentIndexJ = 0; currentIndexJ <= length; currentIndexJ++) {
+        const dotStyle = getDotStyle({
+          activeIndicatorConfig,
+          currentIndex: currentIndexJ,
+          decreasingDots,
+          inactiveIndicatorConfig,
+          index,
+          indicatorState: stateI,
+          maxIndicators,
+        });
+        dotStylesMap.set(`${stateI}-${currentIndexJ}`, dotStyle);
+      }
+    }
+    return dotStylesMap;
+  }, [
+    activeIndicatorConfig,
+    decreasingDots,
+    inactiveIndicatorConfig,
+    index,
+    maxIndicators,
+    length,
+  ]);
   const [type, setType] = useState(
-    getDotStyle({
-      activeIndicatorConfig,
-      currentIndex,
-      decreasingDots,
-      inactiveIndicatorConfig,
-      index,
-      indicatorState: state,
-      maxIndicators,
-    })
+    calculatedStyles.get(`${state}-${currentIndex}`)!
   );
   const prevType = usePrevious(type, type);
   const animatedValue = useSharedValue(0);
 
   useEffect(() => {
-    setType(
-      getDotStyle({
-        activeIndicatorConfig,
-        currentIndex,
-        decreasingDots,
-        inactiveIndicatorConfig,
-        index,
-        indicatorState: state,
-        maxIndicators,
-      })
-    );
-  }, [
-    activeIndicatorConfig,
-    currentIndex,
-    decreasingDots,
-    inactiveIndicatorConfig,
-    index,
-    maxIndicators,
-    state,
-  ]);
+    setType(calculatedStyles.get(`${state}-${currentIndex}`)!);
+  }, [calculatedStyles, currentIndex, state]);
 
   useEffect(() => {
     animatedValue.value = 0;
