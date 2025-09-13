@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, type JSX } from 'react';
 import Animated, {
   useSharedValue,
   withTiming,

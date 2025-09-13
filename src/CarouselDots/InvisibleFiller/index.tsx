@@ -1,4 +1,5 @@
 import { View } from 'react-native';
+import { type JSX } from 'react';
 
 import styles from './styles';
 
