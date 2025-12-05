@@ -79,11 +79,13 @@ const CarouselDots = ({
   interpolateOpacityAndColor = true,
   duration = 500,
 }: CarouselDotsProps): JSX.Element => {
+  // Clamp currentIndex to ensure it's within [0, length - 1]
+  const clampedIndex = Math.max(0, Math.min(Math.floor(currentIndex), length - 1));
   const refScrollView = useRef<ScrollView>(null);
   const positiveMomentum = useRef<boolean>(false);
-  const prevIndex = usePrevious(currentIndex, currentIndex);
+  const prevIndex = usePrevious(clampedIndex, clampedIndex);
   const [carouselState, setCarouselState] = useState<CarouselState>({
-    currentIndex,
+    currentIndex: clampedIndex,
     state: 1,
   });
   const list = [...Array(length).keys()];
@@ -115,9 +117,9 @@ const CarouselDots = ({
     [maxIndicators, offsetSizeMap]
   );
   useEffect(() => {
-    positiveMomentum.current = currentIndex - prevIndex > 0;
+    positiveMomentum.current = clampedIndex - prevIndex > 0;
     let internalState = carouselState.state;
-    internalState += currentIndex - prevIndex;
+    internalState += clampedIndex - prevIndex;
     const finalState = internalState;
     if (internalState > maxIndicators) {
       internalState = maxIndicators;
@@ -127,7 +129,7 @@ const CarouselDots = ({
     }
     if (internalState) {
       setCarouselState({
-        currentIndex,
+        currentIndex: clampedIndex,
         state: internalState,
       });
     }
@@ -136,10 +138,10 @@ const CarouselDots = ({
       length > maxIndicators &&
       (finalState > maxIndicators || finalState < 1)
     ) {
-      scrollTo(currentIndex);
+      scrollTo(clampedIndex);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentIndex, length, maxIndicators, scrollTo]);
+  }, [clampedIndex, length, maxIndicators, scrollTo]);
   const containerSize = useMemo(() => {
     return (
       decreasingDots.reduce(
@@ -173,7 +175,7 @@ const CarouselDots = ({
               inactiveIndicatorConfig={inactiveIndicatorConfig}
               verticalOrientation={verticalOrientation}
               decreasingDots={decreasingDots}
-              carouselState={carouselState}
+              carouselState={{ ...carouselState, currentIndex: clampedIndex }}
               interpolateOpacityAndColor={interpolateOpacityAndColor}
               duration={duration}
             />
@@ -222,7 +224,7 @@ const CarouselDots = ({
               inactiveIndicatorConfig={inactiveIndicatorConfig}
               decreasingDots={decreasingDots}
               verticalOrientation={verticalOrientation}
-              carouselState={carouselState}
+              carouselState={{ ...carouselState, currentIndex: clampedIndex }}
               interpolateOpacityAndColor={interpolateOpacityAndColor}
               duration={duration}
             />
@@ -273,6 +275,7 @@ const CarouselDotsWrapper = ({
       runOnJS(handleGoUp)(momentum);
     }
   };
+  
   const gesture = Gesture.Pan()
     .onStart(() => {
       accDesplacementPos.value = 0;
