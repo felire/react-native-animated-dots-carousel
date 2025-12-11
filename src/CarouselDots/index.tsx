@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  type JSX,
+} from 'react';
 import { I18nManager, View, ScrollView } from 'react-native';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { useSharedValue, runOnJS } from 'react-native-reanimated';
